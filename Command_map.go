@@ -7,7 +7,7 @@ import (
 	"github.com/Pratham-Creating/Pokedex-Learning-Go/pokeapi"
 )
 
-func mapCommandforward(cfg *config) error {
+func mapCommandforward(cfg *config, waste string) error {
 	location, err := pokeapi.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
 		return err
@@ -22,7 +22,7 @@ func mapCommandforward(cfg *config) error {
 	return nil
 }
 
-func mapCommandbackword(cfg *config) error {
+func mapCommandbackword(cfg *config, waste string) error {
 	if cfg.prevLocationsURL == nil {
 		return errors.New("you're on the first page")
 	}

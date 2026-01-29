@@ -15,7 +15,7 @@ type config struct {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, string) error
 }
 
 func CleanInput(text string) []string {
@@ -48,17 +48,38 @@ func startRpl(cfg *config) {
 			description: "List the 20 previous Location Areas",
 			callback:    mapCommandbackword,
 		},
+		"explore": {
+			name:        "Explore Pokemon",
+			description: "List the name of all Pokemon in that region",
+			callback:    exploreCommand,
+		},
+		"catch": {
+			name:        "Catch Pokemon",
+			description: "Catch a pokemon if you can",
+			callback:    catchCommand,
+		},
 	}
 
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
-		text := scanner.Text()
+		text := strings.TrimSpace(scanner.Text())
+		parts := strings.Fields(text)
+
+		if len(parts) == 0 {
+			continue
+		}
+
+		commandName := parts[0]
+		arg := ""
+		if len(parts) > 1 {
+			arg = parts[1]
+		}
 
 		isCommand := false
 		for key, _ := range commands {
-			if text == key {
-				if err := commands[key].callback(cfg); err != nil {
+			if commandName == key {
+				if err := commands[key].callback(cfg, arg); err != nil {
 					fmt.Println(err)
 				}
 				isCommand = true
