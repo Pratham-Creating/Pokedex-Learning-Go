@@ -1,5 +1,42 @@
 package main
 
-func mapCommand(cfg *config) {
+import (
+	"errors"
+	"fmt"
 
+	"github.com/Pratham-Creating/Pokedex-Learning-Go/pokeapi"
+)
+
+func mapCommandforward(cfg *config) error {
+	location, err := pokeapi.ListLocations(cfg.nextLocationsURL)
+	if err != nil {
+		return err
+	}
+
+	cfg.nextLocationsURL = location.Next
+	cfg.prevLocationsURL = location.Prev
+
+	for _, loc := range location.Results {
+		fmt.Println(loc.Name)
+	}
+	return nil
+}
+
+func mapCommandbackword(cfg *config) error {
+	if cfg.prevLocationsURL == nil {
+		return errors.New("you're on the first page")
+	}
+
+	location, err := pokeapi.ListLocations(cfg.prevLocationsURL)
+	if err != nil {
+		return err
+	}
+
+	cfg.nextLocationsURL = location.Next
+	cfg.prevLocationsURL = location.Prev
+
+	for _, loc := range location.Results {
+		fmt.Println(loc.Name)
+	}
+	return nil
 }
